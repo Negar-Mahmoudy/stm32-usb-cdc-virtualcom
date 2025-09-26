@@ -129,9 +129,9 @@ What happens here:
 6. You should see `"Heloooooooooo"` printed every 1 second.
 7. If you send data from the terminal, it will be received in the `buffer[32]` array.
 
-![Device manager](images/usb_cdc_diagram.png)
+![Device manager](https://github.com/Negar-Mahmoudy/stm32-usb-cdc-virtualcom/blob/main/images/1.png?raw=true)
 
-![Hercules output](images/usb_cdc_diagram.png)
+![Hercules output](https://github.com/Negar-Mahmoudy/stm32-usb-cdc-virtualcom/blob/main/images/2.png?raw=true)
 
 ---
 
