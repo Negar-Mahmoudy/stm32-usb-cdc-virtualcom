@@ -1,34 +1,20 @@
 # stm32-usb-cdc-virtualcom
 
-This project demonstrates how to use the **USB CDC (Communication Device Class)** on an STM32 microcontroller.  
-By enabling CDC, the STM32 device can act as a **Virtual COM Port** and communicate with a PC over USB just like a regular UART.
+This is a project on USB CDC ( Communication Device Class) using the STM32 microcontroller.
+Through CDC it is possible to use the STM32 as a virtual COM port, and when connected to a PC/Mac, it appears as another serial interface just like any other UART.
 
 ---
 
 ## What is USB CDC?
-USB CDC (Communication Device Class) is a USB class that emulates serial communication over USB.  
+USB CDC (Communication Device Class) is a USB class that is predominantly used for serial bridging over USB.
 With this feature:
-- Your STM32 board can appear on a PC as a **Virtual COM Port (VCP)**.
-- You can send and receive data using terminal applications such as Hercules.
-- It eliminates the need for an external USB-to-UART converter.
+- Your STM32 board can appear on a PC as a Virtual COM Port (VCP).
+- With Terminal applications such as Hercules,you can send and receive data.
+- Not external USB to UART converter is required.
 
 ---
 
-## Project Structure
-The main files involved are:
-
-- **`main.c`**  
-  - Initializes the USB device.  
-  - Periodically transmits a test string (`"Heloooooooooo\n"`) to the PC.  
-
-- **`usbd_cdc_if.c`**  
-  - Provides the interface between USB hardware and user application.  
-  - Contains callbacks for **data transmission** and **data reception**.  
-  - Handles custom buffer management for received data.
-
----
-
-## main.c Explained
+## main.c 
 
 Key points from `main.c`:
 
@@ -45,7 +31,7 @@ char* data = "Heloooooooooo\n";
 uint8_t buffer[32];
 ````
 
-The `while(1)` loop continuously sends data every 1 second:
+The `while(1)` sends data every 1 second:
 
 ```c
 while (1)
@@ -55,11 +41,9 @@ while (1)
 }
 ```
 
-This demonstrates **sending data from STM32 to PC**.
-
 ---
 
-## usbd_cdc_if.c Explained
+## usbd_cdc_if.c 
 
 This file contains the implementation of the USB CDC interface.
 
@@ -97,41 +81,8 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 }
 ```
 
-What happens here:
-
-* The incoming USB data is copied into a user-defined buffer (`buffer[32]` in `main.c`).
-* The `Buf` is cleared after use.
-* This allows you to safely process received data elsewhere in your application.
-
----
-
-## How Transmission and Reception Work
-
-* **Transmission (TX):**
-
-  * Simple API: `CDC_Transmit_FS(data, length)`
-  * You choose the data to send; Cube library handles the transfer.
-
-* **Reception (RX):**
-
-  * Callback-driven: `CDC_Receive_FS()` is called automatically.
-  * User must copy/manage the data (because CubeMX cannot know how you want to use it).
-
----
-
-## How to Test
-
-1. Flash the project onto your STM32 board.
-2. Connect the board via USB to your PC.
-3. The PC will recognize it as a **Virtual COM Port** (VCP).
-4. Open a serial terminal (e.g. Hercules).
-5. Set the correct COM port and baud rate (default is irrelevant, since CDC is USB).
-6. You should see `"Heloooooooooo"` printed every 1 second.
-7. If you send data from the terminal, it will be received in the `buffer[32]` array.
-
-![Device manager](https://github.com/Negar-Mahmoudy/stm32-usb-cdc-virtualcom/blob/main/images/1.png?raw=true)
-
-![Hercules output](https://github.com/Negar-Mahmoudy/stm32-usb-cdc-virtualcom/blob/main/images/2.png?raw=true)
+The incoming USB data is copied into a user-defined buffer (`buffer[32]` in `main.c`). Then the `Buf` is cleared after use.This allows processing data safely.
+Note: The **transmit function** works immediately since the application provides the data. But the **receive function** requires user handling because the library cannot assume how to manage data.
 
 ---
 
@@ -143,9 +94,7 @@ What happens here:
 * Replacing USB-to-UART converters with a direct USB CDC connection.
 
 ---
+![Device manager](https://github.com/Negar-Mahmoudy/stm32-usb-cdc-virtualcom/blob/main/images/1.png?raw=true)
 
-## Notes
-
-* The **transmit function** works immediately since the application provides the data.
-* The **receive function** requires user handling because the library cannot assume how to manage your data.
+![Hercules output](https://github.com/Negar-Mahmoudy/stm32-usb-cdc-virtualcom/blob/main/images/2.png?raw=true)
 
